@@ -21,6 +21,30 @@
 - 使用 Ego Lite 上传并填写两个平台，最后交回用户确认发布
 - 记录每一期的确认状态，随时从现有项目继续生产
 
+## 实际效果
+
+下面的素材来自一次完整生产流程，用于展示默认黑金国风预设。演示只包含视觉资产；GIF 已移除复刻配音和 BGM。
+
+### 动态成片预览
+
+<p align="center">
+  <img src="./assets/demo/preview.gif" width="720" alt="DAO VIDEO 黑金国风成片静音动态预览">
+</p>
+
+### 四张确认分镜
+
+<p align="center">
+  <img src="./assets/demo/storyboards.png" width="100%" alt="四张黑金国风分镜效果图">
+</p>
+
+### 同一原帧生成横竖封面
+
+<p align="center">
+  <img src="./assets/demo/covers.png" width="100%" alt="3:4 竖版封面与 4:3 横版封面对照">
+</p>
+
+> 演示中的品牌、人物与文案只代表一个项目预设。其他用户应替换为自己的品牌素材、授权音色、BGM 和发布账号。
+
 ## 安装
 
 需要 macOS 或 Linux、Python 3、FFmpeg、Node.js、npm 和 npx。剪映草稿与 Ego Lite 发布属于 macOS 可选能力。
