@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dao Video 视频项目"
+  short_description: "配置、制作、续作并准备发布传统文化短视频"
+  default_prompt: "使用 $dao-video 检查配置并继续制作今天的视频，发布前停下等我确认。"
