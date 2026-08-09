@@ -20,6 +20,7 @@
 - 打包抖音、视频号所需的视频、封面、标题和话题
 - 使用 Ego Lite 上传并填写两个平台，最后交回用户确认发布
 - 记录每一期的确认状态，随时从现有项目继续生产
+- 在发布后 24 小时、72 小时和 7 天记录平台数据，形成单变量调整与效果验证闭环
 
 ## 实际效果
 
@@ -191,7 +192,44 @@ python3 scripts/doctor.py --publishing
 发布包 → Ego Lite 上传填写
     ↓
 等待用户亲自点击发布
+    ↓
+24h / 72h / 7d 复盘 → 下期单变量实验 → 验证是否有效
 ```
+
+## 发布后复盘
+
+复盘不只看播放量，而是从分发、开头留存、正文完播、互动和关注转化逐层诊断。默认将当前作品与同平台、相同观察时长的最近 5 条可比作品中位数比较。
+
+手动录入或从创作者中心读取数据后运行：
+
+```bash
+python3 scripts/review_metrics.py \
+  --project-root "/path/to/video-project" \
+  --episode "20260809-闲下来" \
+  --title "闲下来，也是一种福气" \
+  --platform douyin \
+  --checkpoint-hours 24 \
+  --metric views=12000 \
+  --metric completion_rate=31.5% \
+  --metric avg_watch_seconds=18.2 \
+  --metric likes=530 \
+  --metric comments=41 \
+  --metric shares=86 \
+  --metric saves=120 \
+  --hypothesis "前五秒进入主题偏慢" \
+  --next-change "下一期开头钩子压缩到两秒内，其他设置不变" \
+  --target-metric retention_5s
+```
+
+数据和报告保存在项目的 `06-复盘/`：
+
+- 保留每个检查点的原始快照，不覆盖历史数据
+- 抖音和视频号分开比较
+- 区分事实、原因假设和下一步动作
+- 每期原则上只调整一个主要变量
+- 在下一期相同检查点判断调整为 `effective`、`neutral`、`harmful` 或 `inconclusive`
+
+完整方法见 [`references/review-loop.md`](./references/review-loop.md)。
 
 在 Codex 中可以直接说：
 
@@ -272,6 +310,7 @@ dao-video/
 │   ├── setup.md             # 安装与可移植性
 │   ├── workflow.md          # 制作细节与实测约束
 │   ├── ego-publish.md       # 发布前自动化与停止线
+│   ├── review-loop.md       # 发布后数据复盘与单变量实验
 │   └── project-state.example.md
 └── scripts/                 # 生成、配音、字幕、剪辑、封面与预检工具
 ```

@@ -38,6 +38,13 @@ publishing:
   stop_before_publish: true
   wechat_location: "不显示位置"
 
+review:
+  enabled: true
+  checkpoints_hours: [24, 72, 168]
+  baseline_episodes: 5
+  primary_metric: "completion_rate"
+  change_one_variable: true
+
 optional:
   jianying_drafts_dir: ""
   mcp_cut_repo: ""

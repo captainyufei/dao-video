@@ -1,6 +1,6 @@
 ---
 name: dao-video
-description: Produce and manage short-form Chinese philosophy/traditional-culture videos from topic selection through copy, storyboard, AI visuals, MiniMax voice-over, subtitles, BGM envelope, covers, release packaging, and Ego Lite form preparation. Use for creating daily videos, resuming a saved video project, checking production prerequisites, preparing Douyin or WeChat Channels uploads, or managing the Qingyunguan preset. Never click a platform's final publish control.
+description: Produce, manage, and review short-form Chinese philosophy/traditional-culture videos from topic selection through copy, storyboard, AI visuals, MiniMax voice-over, subtitles, BGM envelope, covers, release packaging, Ego Lite form preparation, post-publication metrics review, and controlled next-episode experiments. Use for creating daily videos, resuming a saved project, checking prerequisites, preparing Douyin or WeChat Channels uploads, reviewing 24-hour/72-hour/7-day performance, or managing the Qingyunguan preset. Never click a platform's final publish control.
 ---
 
 # Dao Video
@@ -49,8 +49,10 @@ Use this order and stop at every confirmation gate:
 8. **Cover gate** — build both 3:4 and 4:3 covers from the same approved source frame. Present both before packaging.
 9. **Package** — copy only the final video, both confirmed covers, and approved title/topic text into the release directory.
 10. **Publish preparation** — follow [references/ego-publish.md](references/ego-publish.md) and stop before final publication.
+11. **Performance review** — after the user confirms publication, follow [references/review-loop.md](references/review-loop.md) at the configured checkpoints. Record facts separately from hypotheses and change only one major variable in the next test.
 
 Read [references/workflow.md](references/workflow.md) for commands, audio rules, cover constraints, and implementation pitfalls.
+Read [references/review-loop.md](references/review-loop.md) whenever the user asks about results, performance, optimization, next-day adjustments, or whether a prior adjustment worked.
 
 ## Default Qingyunguan preset
 
@@ -68,6 +70,10 @@ Use the `qingyunguan` preset only when the user is working on that account/proje
 - Store each episode's topic, source, approval state, paid generations, selected assets, final paths, and publishing state in the project manifest.
 - Use states such as `copy_pending`, `stills_pending`, `cover_pending`, `ready_to_upload`, `awaiting_publish_confirmation`, and `published`.
 - Mark `published` only after the user confirms that publication actually occurred.
+- Store platform metrics snapshots and experiment decisions under the project's `06-复盘/` directory. Never overwrite an earlier checkpoint.
+- Compare like with like: same platform, similar elapsed time, and preferably similar duration/topic class. Do not compare raw 24-hour data with a 7-day total.
+- Separate observed metrics, interpretation, and next action. Treat causal claims as hypotheses unless a controlled follow-up supports them.
+- Change one primary variable per episode when testing an adjustment; preserve all other confirmed production settings when practical.
 - Preserve rejected or experimental outputs outside the release directory and never mistake them for finals.
 
 ## Tool routing
