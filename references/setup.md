@@ -13,6 +13,55 @@ Optional components:
 - Jianying Pro and `mcp-cut` for editable draft export on macOS
 - faster-whisper for third-party audio alignment fallback
 
+## Cost and account notice
+
+- MiniMax voice cloning and synthesis are paid API operations. Require the user to review current pricing and maintain usable balance before cloning or synthesis.
+- Volcengine Ark copy, Seedream image generation, and Seedance video generation are paid model calls. Require the user to confirm model entitlement and current pricing before the first generation.
+- Never state a hard-coded price as permanent. Link to the provider's current pricing page and treat every paid call as visible project work.
+- Ego Lite is only required for publishing preparation. Platform accounts, verification, and login are user responsibilities.
+
+## MiniMax first-time voice setup
+
+1. Create a MiniMax API key at `https://platform.minimaxi.com/` and add usable balance or a suitable plan.
+2. Require an authorized voice sample in mp3, m4a, or wav format, 10 seconds to 5 minutes, no more than 20 MB.
+3. Never offer or distribute the maintainer's cloned voice, source recording, or Voice ID. Require each recipient to use a voice available in their own account.
+4. Choose a custom Voice ID 8–256 characters long, starting with a letter, containing only letters, digits, `-`, and `_`, and not ending with `-` or `_`.
+5. Run:
+
+```bash
+python3 scripts/minimax_tts.py \
+  --ref-audio /path/to/authorized-voice.wav \
+  --voice-id my-dao-voice-01 \
+  --text /path/to/test-narration.txt \
+  --output /path/to/test-narration.wav \
+  --subtitle
+```
+
+6. Save the successful Voice ID to local `config.yaml`. Remind the user that the provider may remove a cloned voice if it is not formally used within its documented retention window.
+
+Official references:
+
+- Voice clone guide: `https://platform.minimaxi.com/docs/guides/speech-voice-clone`
+- Voice clone API: `https://platform.minimaxi.com/docs/api-reference/voice-cloning-clone`
+- Current pricing: `https://platform.minimaxi.com/docs/guides/pricing-paygo`
+
+## Volcengine Ark first-time setup
+
+1. Register and complete any required account verification.
+2. Enable billing and check usable balance.
+3. Create an API key at `https://console.volcengine.com/ark/region:ark+cn-beijing/apikey`.
+4. Confirm entitlement for the configured copy model, Seedream model, and Seedance model. An API key alone is insufficient proof.
+5. Export `ARK_API_KEY` or sign in with arkcli. Use direct model-ID API calls; do not create an endpoint solely because arkcli asks for `ep-...`.
+6. If a model is unavailable, stop and ask the user to select an entitled model after reviewing its price.
+
+## Ego Lite first-time setup
+
+1. Install the macOS app from `https://www.egolite.app/document/en/docs/quick-start`.
+2. Complete onboarding and optionally migrate Chrome data when the user wants to reuse local logins.
+3. Confirm the `ego-browser` Skill is installed; otherwise run `npx skills add citrolabs/ego-lite`.
+4. Ask the user to log in to Douyin and WeChat Channels inside Ego Lite.
+5. Reuse one persistent Space with two platform tabs. Never delete it automatically and never click the final publish control.
+
 ## Secrets
 
 Provide secrets through environment variables or a secret manager:

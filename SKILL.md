@@ -16,11 +16,15 @@ Run a configurable, resumable video-production project. Treat checked-in files a
 
 ## First run
 
-1. Run `python3 scripts/init_config.py --output <project>/config.yaml` if no local config exists.
-2. Ask the user to fill only missing account-specific values. Do not invent a voice ID, BGM path, project root, account, or license.
-3. Install `requirements.txt`, FFmpeg, Node.js, npm, and npx as needed.
-4. Run `python3 scripts/doctor.py --config <project>/config.yaml`. Add `--publishing` only when testing publishing.
-5. Treat model entitlement and platform login as runtime checks; never interpret presence of an API key as proof of access.
+1. Read [references/setup.md](references/setup.md) and explicitly tell the user that MiniMax cloning/synthesis and Ark model generation are paid operations whose current price and balance must be checked.
+2. Install `requirements.txt`, FFmpeg, Node.js, npm, and npx as needed.
+3. Run `python3 scripts/init_config.py --output <project>/config.yaml` if no local config exists.
+4. For MiniMax, require either a Voice ID already available in the user's own account or an authorized 10-second-to-5-minute voice sample. Guide the user through `minimax_tts.py --ref-audio`; never distribute or suggest the maintainer's clone.
+5. For Ark, require an API key, billing readiness, and confirmed access to the configured copy, Seedream, and Seedance models. Never interpret presence of a key as proof of model entitlement.
+6. Ask the user to fill only missing account-specific values. Do not invent a voice ID, BGM path, project root, account, license, or model permission.
+7. Install Ego Lite and confirm `ego-browser` only when publishing preparation is requested. Require the user to log in to their own platforms.
+8. Run `python3 scripts/doctor.py --config <project>/config.yaml`. Add `--publishing` only when testing publishing.
+9. Stop before the first paid generation if cost or permission is still unclear.
 
 Read [references/setup.md](references/setup.md) for configuration fields and portability rules. For the maintainer's current local production state, read `references/project-state.md` only when that untracked local file exists; initialize it from [references/project-state.example.md](references/project-state.example.md) when needed.
 
