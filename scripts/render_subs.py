@@ -37,6 +37,18 @@ def main():
             items.append((st, en, " ".join(txt)))
         i += 1
 
+    # 二次防线：即使上游 SRT 来自其他工具，也绝不渲染时间重叠或倒序字幕。
+    previous_end = 0.0
+    for k, (st, en, _) in enumerate(items, 1):
+        start, end = float(st), float(en)
+        if end <= start:
+            raise RuntimeError(f"第 {k} 条字幕时长无效: {start:.3f}s -> {end:.3f}s")
+        if start < previous_end - 0.001:
+            raise RuntimeError(
+                f"第 {k} 条字幕与上一条重叠: {start:.3f}s < {previous_end:.3f}s"
+            )
+        previous_end = end
+
     pad_x, pad_y = 44, 24
     chain, inp = [], "[vc]"
     for k, (st, en, text) in enumerate(items, 1):

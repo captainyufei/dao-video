@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a local dao-video configuration from the committed example."""
+"""Create an agent-managed dao-video configuration from the committed example."""
 import argparse
 import shutil
 from pathlib import Path
@@ -7,23 +7,55 @@ from pathlib import Path
 from dao_config import SKILL_ROOT
 
 
+def set_value(data: dict, section: str, key: str, value: str | None) -> None:
+    if value is not None:
+        data.setdefault(section, {})[key] = value
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="config.yaml")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--project-root")
+    parser.add_argument("--preset", choices=("qingyunguan-blackgold", "qingxuguan-ink"))
+    parser.add_argument("--brand-name")
+    parser.add_argument("--voice-id")
+    parser.add_argument("--bgm-path")
+    parser.add_argument("--ego-space-name")
     args = parser.parse_args()
     output = Path(args.output).expanduser().resolve()
     if output.exists() and not args.force:
         raise SystemExit(f"配置已存在: {output}（如需覆盖，加 --force）")
     output.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(SKILL_ROOT / "config.example.yaml", output)
+
+    values_supplied = any(
+        value is not None
+        for value in (
+            args.project_root,
+            args.preset,
+            args.brand_name,
+            args.voice_id,
+            args.bgm_path,
+            args.ego_space_name,
+        )
+    )
+    if values_supplied:
+        try:
+            import yaml
+        except ImportError as exc:
+            raise SystemExit("缺少 PyYAML；请由 Agent 安装 requirements.txt 后重试。") from exc
+        data = yaml.safe_load((SKILL_ROOT / "config.example.yaml").read_text(encoding="utf-8")) or {}
+        set_value(data, "project", "root", args.project_root)
+        set_value(data, "project", "preset", args.preset)
+        set_value(data, "project", "brand_name", args.brand_name)
+        set_value(data, "voice", "voice_id", args.voice_id)
+        set_value(data, "audio", "bgm_path", args.bgm_path)
+        set_value(data, "publishing", "ego_space_name", args.ego_space_name)
+        output.write_text(yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    else:
+        shutil.copyfile(SKILL_ROOT / "config.example.yaml", output)
     print(f"已创建本地配置: {output}")
-    print("下一步：")
-    print("1. MiniMax：创建 API Key 并准备余额；填写自己账号已有的 voice_id，或用已获授权的人声运行 minimax_tts.py --ref-audio 克隆。")
-    print("2. 火山方舟：创建 API Key、开通计费，并确认文案、Seedream、Seedance 模型权限。")
-    print("3. 填写 project.root、voice.voice_id 和有权使用的 audio.bgm_path。")
-    print("4. 需要自动填写发布页面时，安装 Ego Lite 并登录自己的抖音/视频号账号。")
-    print("5. 运行 doctor.py；发布功能再加 --publishing。")
+    print("配置由 Agent 管理；接下来由 Agent 运行 doctor.py 并只向用户报告无法自动补齐的条件。")
 
 
 if __name__ == "__main__":

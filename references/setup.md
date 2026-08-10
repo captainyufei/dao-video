@@ -1,5 +1,7 @@
 # Setup and portability
 
+This is an agent execution reference, not a user checklist. The agent must run checks, create configuration, and perform safe local setup. Ask the user only for prerequisites that require their identity, authorization, payment decision, licensed asset, or interactive login.
+
 ## Required software
 
 - Python 3
@@ -23,10 +25,11 @@ Optional components:
 ## MiniMax first-time voice setup
 
 1. Create a MiniMax API key at `https://platform.minimaxi.com/` and add usable balance or a suitable plan.
-2. Require an authorized voice sample in mp3, m4a, or wav format, 10 seconds to 5 minutes, no more than 20 MB.
-3. Never offer or distribute the maintainer's cloned voice, source recording, or Voice ID. Require each recipient to use a voice available in their own account.
-4. Choose a custom Voice ID 8–256 characters long, starting with a letter, containing only letters, digits, `-`, and `_`, and not ending with `-` or `_`.
-5. Run:
+2. When no voice is configured and the user has not requested a specific voice, automatically use `assets/voice/default-voice.mp3`. Upload it to the user's own MiniMax account and clone it as API Voice ID `dao-default-voice`; the user-facing name remains “默认音色”.
+3. Save the successful Voice ID in local `config.yaml` and reuse it. Do not upload or clone again on every episode.
+4. When the user asks to `替换音色` or supplies a specific voice, require an authorized sample in mp3, m4a, or wav format, 10 seconds to 5 minutes, no more than 20 MB, or accept an existing Voice ID from that user's MiniMax account.
+5. For a replacement clone, choose a new API Voice ID 8–256 characters long, starting with a letter, containing only letters, digits, `-`, and `_`, and not ending with `-` or `_`. Keep private replacement samples outside the repository.
+6. Agent-run example for replacing the voice:
 
 ```bash
 python3 scripts/minimax_tts.py \
@@ -37,7 +40,7 @@ python3 scripts/minimax_tts.py \
   --subtitle
 ```
 
-6. Save the successful Voice ID to local `config.yaml`. Remind the user that the provider may remove a cloned voice if it is not formally used within its documented retention window.
+7. Save the successful replacement Voice ID to local `config.yaml`. Remind the user that the provider may remove a cloned voice if it is not formally used within its documented retention window.
 
 Official references:
 
@@ -88,13 +91,15 @@ Publishing remains disabled by default. Enabling it does not prove that platform
 
 ## Portability guarantees
 
-- A cloned MiniMax voice ID is normally account-scoped. Recipients must clone or choose their own permitted voice.
+- A cloned MiniMax voice ID is account-scoped. Each recipient's Agent uploads the bundled default sample into that recipient's account; the Skill does not share a cloud voice across accounts.
 - Ego Lite Spaces, cookies, and platform logins are local browser state and never travel with this repository.
 - Paid model IDs may require separate entitlement and may change. Prefer the configured ID and report access errors rather than changing models silently.
-- BGM and fonts are user-supplied assets. Do not bundle them unless their license explicitly permits redistribution.
+- Use the approved bundled `assets/audio/default-bgm.mp3` when the user does not request another track. Treat every replacement BGM and font as user-supplied; do not commit it unless its license explicitly permits redistribution.
 - Jianying paths are derived from the current home directory or explicit flags; they are not portable across operating systems.
 
-## First-run commands
+## Agent-run first initialization
+
+Run these commands yourself. Do not paste them as required work for the user:
 
 ```bash
 python3 -m pip install -r requirements.txt

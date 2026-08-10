@@ -55,38 +55,45 @@ def main():
         print(f"OK {args.out}: {len(sentences)} 句（whisper 段级插值对齐）, 旁白 {dur:.1f}s")
     elif args.subtitle:
         anchors = json.load(open(args.subtitle, encoding="utf-8"))
-        # 短句归属锚点：从当前锚点开始找，包含该短句的锚点
-        srt, ai = [], 0
-        def find_anchor(s, start):
-            for k in range(start, len(anchors)):
-                if s in anchors[k]["text"] or anchors[k]["text"] in s:
-                    return k
-            return None
-        i = 0
-        while i < len(sentences):
-            k = find_anchor(sentences[i], ai)
-            if k is None:
-                # 兜底：剩余短句按余下时长均分
-                k = len(anchors) - 1
-            ai = max(ai, k)
-            a_begin = anchors[k]["time_begin"] / 1000.0
-            a_end = anchors[k]["time_end"] / 1000.0
-            # 收集属于该锚点的连续短句
-            group = [sentences[i]]
-            j = i + 1
-            while j < len(sentences):
-                if find_anchor(sentences[j], k + 1) is not None:
-                    break
-                group.append(sentences[j]); j += 1
-            # 句内按字数细分
+        # MiniMax 锚点已经包含权威文本和精确起止时间。只拆分各锚点自己的文本，
+        # 禁止用跨锚点模糊子串匹配；像“哪些话”这样的重复短语会同时命中相邻
+        # 锚点，旧算法因此生成重叠字幕。
+        entries = []
+        previous_end = 0.0
+        for anchor_no, anchor in enumerate(anchors, 1):
+            a_begin = anchor["time_begin"] / 1000.0
+            a_end = anchor["time_end"] / 1000.0
+            if a_begin < previous_end - 0.001:
+                raise RuntimeError(
+                    f"MiniMax 锚点时间重叠: 第 {anchor_no} 段从 {a_begin:.3f}s 开始，"
+                    f"上一段到 {previous_end:.3f}s"
+                )
+            if a_end <= a_begin:
+                raise RuntimeError(f"MiniMax 锚点时长无效: 第 {anchor_no} 段")
+            group = [s.strip() for s in re.split(
+                r'[。！？；，、：…]+', anchor.get("text", "")
+            ) if s.strip()]
+            if not group:
+                previous_end = a_end
+                continue
             weights = [max(len(x), 1) for x in group]
             total_w = sum(weights)
             cur = a_begin
             for gs, w in zip(group, weights):
                 t2 = cur + (a_end - a_begin) * w / total_w
-                srt.append(f"{len(srt)+1}\n{ts(cur)} --> {ts(t2)}\n{gs}\n")
+                entries.append((cur, t2, gs))
                 cur = t2
-            i = j
+            previous_end = a_end
+        for n in range(1, len(entries)):
+            if entries[n][0] < entries[n-1][1] - 0.001:
+                raise RuntimeError(
+                    f"字幕时间重叠: 第 {n} 条结束 {entries[n-1][1]:.3f}s，"
+                    f"第 {n+1} 条开始 {entries[n][0]:.3f}s"
+                )
+        srt = [
+            f"{n}\n{ts(start)} --> {ts(end)}\n{text}\n"
+            for n, (start, end, text) in enumerate(entries, 1)
+        ]
         open(args.out, 'w', encoding='utf-8').write('\n'.join(srt))
         print(f"OK {args.out}: {len(srt)} 句（MiniMax 时间戳对齐）, 旁白 {dur:.1f}s")
     else:

@@ -2,8 +2,8 @@ version: 1
 
 project:
   root: ""
-  brand_name: "青云观"
-  preset: "qingyunguan"
+  brand_name: ""
+  preset: "qingyunguan-blackgold"
 
 models:
   ark_llm: "doubao-1-5-pro-32k-250115"
@@ -13,12 +13,16 @@ models:
 
 voice:
   provider: "minimax"
+  label: "默认音色"
   voice_id: ""
+  default_voice_id: "dao-default-voice"
+  default_ref_audio: "assets/voice/default-voice.mp3"
   emotion: "calm"
   speed: 0.9
 
 audio:
-  bgm_path: ""
+  bgm_label: "默认 BGM"
+  bgm_path: "assets/audio/default-bgm.mp3"
   normalize_lufs: -20
   intro_volume: 0.65
   body_volume: 0.30

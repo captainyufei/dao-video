@@ -14,13 +14,32 @@
 
 - 从主题生成原创中文哲思、传统文化或节气口播文案
 - 把确认后的文案拆成分镜，生成静帧和动态视频
-- 使用 MiniMax 账号内音色完成配音并导出同次生成的字幕时间戳
+- 首次使用时自动把内置“默认音色”上传到用户自己的 MiniMax 账号完成克隆，并导出同次生成的字幕时间戳
 - 使用 FFmpeg 合成画面、字幕、品牌包装和手工 BGM 音量包络
+- 未指定音乐时自动使用内置 `default-bgm.mp3`；说“替换 BGM”即可改用其他授权音乐
 - 从同一视频原帧制作 `3:4` 与 `4:3` 两张封面
 - 打包抖音、视频号所需的视频、封面、标题和话题
 - 使用 Ego Lite 上传并填写两个平台，最后交回用户确认发布
 - 记录每一期的确认状态，随时从现有项目继续生产
 - 在发布后 24 小时、72 小时和 7 天记录平台数据，形成单变量调整与效果验证闭环
+
+## 怎么用
+
+安装后直接对你的 Agent 说：
+
+```text
+用 dao-video 生成今天的黑金风格视频。
+```
+
+或者：
+
+```text
+用 dao-video 生成一期水墨风格视频，主题是“真正厉害的人，都懂得守拙”。
+```
+
+不用自己检查 Python、FFmpeg、Node.js，不用创建或编辑 `config.yaml`，也不用手动运行诊断命令。Agent 会自动检查环境、创建配置并处理能安全处理的依赖。
+
+如果缺少必须由本人完成的条件，Agent 只会提示缺失项，例如 MiniMax/API Key、账户余额、模型权限或平台登录。默认配音样本和默认 BGM 已经内置，不需要用户另外准备；完成后继续对话即可，不需要重新配置。
 
 ## 实际效果
 
@@ -51,14 +70,20 @@
 需要 macOS 或 Linux、Python 3、FFmpeg、Node.js、npm 和 npx。剪映草稿与 Ego Lite 发布属于 macOS 可选能力。
 
 ```bash
-git clone git@github.com:captainyufei/dao-video.git ~/.codex/skills/dao-video
-cd ~/.codex/skills/dao-video
+npx skills add captainyufei/dao-video --skill dao-video -g
+```
+
+该命令会让安装器选择 Codex、Claude Code、Cursor、OpenCode 等受支持的 Agent，并把唯一的 `dao-video` Skill 安装到相应位置。仓库目前是 Private，执行者需要先登录有访问权限的 GitHub 账号；公开仓库后命令不变。
+
+安装完成后，进入 Skill 所在目录安装 Python 依赖：
+
+```bash
 python3 -m pip install -r requirements.txt
 ```
 
-由于仓库目前是 Private，克隆前需要让 GitHub CLI 或 SSH Key 登录到有权限的账号。
+## 首次使用时会自动处理什么
 
-## 首次配置
+以下内容供 Agent 执行和故障排查，普通用户不需要逐项操作：
 
 ### 先了解费用
 
@@ -73,9 +98,10 @@ python3 -m pip install -r requirements.txt
 ### 一、配置 MiniMax 配音
 
 1. 注册并登录 [MiniMax 开放平台](https://platform.minimaxi.com/)，在“接口密钥”中创建 API Key，并按平台提示充值或购买可用额度。
-2. 准备一段**你本人或已取得明确授权**的干净人声：`mp3`、`m4a` 或 `wav`，时长 10 秒–5 分钟，文件不超过 20 MB。避免背景音乐、混响、多人对话和明显噪声。
-3. 自定义一个仅属于自己账号的 Voice ID：长度 8–256，以英文字母开头，只使用字母、数字、`-`、`_`，末尾不能是 `-` 或 `_`。
-4. 导出环境变量，并用项目脚本上传音频、克隆音色和生成第一次测试旁白：
+2. 如果用户没有指定音色，Agent 自动上传仓库内的 `assets/voice/default-voice.mp3`，在该用户自己的账号中克隆为“默认音色”，底层 API Voice ID 为 `dao-default-voice`。
+3. 克隆成功后 Agent 自动保存配置，以后直接复用，不会每期重复上传。
+4. 用户需要不同声音时，只要说“替换音色”，再提供本人或已明确授权的 10 秒–5 分钟干净人声，或提供自己账号中已有的 Voice ID。Agent 会完成替换和配置更新。
+5. 下面命令仅供 Agent 执行和故障排查，普通用户无需运行：
 
 ```bash
 export MINIMAX_API_KEY="你的 MiniMax API Key"
@@ -100,7 +126,7 @@ voice:
   speed: 0.9
 ```
 
-仓库**不提供也不分发维护者的复刻音色文件或 Voice ID**。音色通常绑定创建它的 MiniMax 账号；其他用户不能假设可直接使用。根据 MiniMax 当前文档，复刻音色若创建后 7 天内没有正式调用，可能被删除，因此首次克隆后应及时完成一次正式合成。
+仓库只分发明确作为默认素材提供的“默认音色”参考文件，不分发任何用户后续提供的私人样本、API Key 或账号配置。云端音色仍绑定各自的 MiniMax 账号。根据 MiniMax 当前文档，复刻音色若创建后 7 天内没有正式调用，可能被删除，因此首次克隆后应及时完成一次正式合成。
 
 ### 二、配置火山方舟、Seedream 和 Seedance
 
@@ -131,15 +157,15 @@ npx skills add citrolabs/ego-lite
 4. 在 Ego Lite 中分别登录自己的抖音和视频号账号。登录状态与 Space 只保存在本机，不会从本仓库同步。
 5. 运行 `python3 scripts/doctor.py --publishing` 验证安装。即使验证通过，最终发布按钮仍必须由用户亲自点击。
 
-### 四、生成本地配置
+### 四、Agent 自动生成本地配置
 
-先生成一份不会进入 Git 的本地配置：
+Agent 会生成一份不会进入 Git 的本地配置；用户无需执行：
 
 ```bash
 python3 scripts/init_config.py --output config.yaml
 ```
 
-至少填写以下内容：
+Agent 会根据当前项目填入能够检测到的内容，并仅询问无法推断的账号或授权信息：
 
 ```yaml
 project:
@@ -149,7 +175,8 @@ voice:
   voice_id: "your-minimax-voice-id"
 
 audio:
-  bgm_path: "/path/to/licensed-bgm.mp3"
+  bgm_label: "默认 BGM"
+  bgm_path: "assets/audio/default-bgm.mp3"
 ```
 
 再提供服务凭证：
@@ -162,13 +189,13 @@ export DAO_VIDEO_CONFIG="$PWD/config.yaml"
 
 方舟凭证也可以由已经登录的 arkcli 当前 Profile 提供。不要把 API Key、Cookie、浏览器目录、付费账户信息或复刻音色源文件提交到仓库。
 
-## 环境预检
+## 环境预检（由 Agent 自动执行）
 
 ```bash
 python3 scripts/doctor.py
 ```
 
-需要准备平台发布时：
+准备平台发布时，Agent 会自动追加发布检查：
 
 ```bash
 python3 scripts/doctor.py --publishing
@@ -234,7 +261,13 @@ python3 scripts/review_metrics.py \
 在 Codex 中可以直接说：
 
 ```text
-使用 $dao-video 检查配置并继续生成今天的视频。
+使用 dao-video，以黑金风格生成今天的视频。
+```
+
+或者：
+
+```text
+使用 dao-video，以水墨风格生成今天的视频。
 ```
 
 或者从已有项目恢复：

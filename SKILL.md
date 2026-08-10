@@ -1,30 +1,42 @@
 ---
 name: dao-video
-description: Produce, manage, and review short-form Chinese philosophy/traditional-culture videos from topic selection through copy, storyboard, AI visuals, MiniMax voice-over, subtitles, BGM envelope, covers, release packaging, Ego Lite form preparation, post-publication metrics review, and controlled next-episode experiments. Use for creating daily videos, resuming a saved project, checking prerequisites, preparing Douyin or WeChat Channels uploads, reviewing 24-hour/72-hour/7-day performance, or managing the Qingyunguan preset. Never click a platform's final publish control.
+description: Create, manage, publish-prep, and review Dao-series Chinese philosophy and traditional-culture videos in selectable black-gold or ink-wash styles. Use for generating or resuming videos, choosing 青云观黑金国风 or 青虚观水墨国风, writing copy, storyboarding, voice-over, subtitles, BGM, covers, release packaging, Douyin/WeChat Channels/Xiaohongshu upload preparation, and 24-hour/72-hour/7-day performance review. Never click a platform's final publish control.
 ---
 
 # Dao Video
 
-Run a configurable, resumable video-production project. Treat checked-in files as the workflow definition and the user's local `config.yaml` as account/device configuration.
+Run one configurable, resumable production system with built-in style presets. Treat checked-in files as the workflow definition and the local `config.yaml` as agent-managed account/device configuration. Keep style selection, onboarding, project state, approvals, audio, packaging, publishing, and review inside this skill. The user describes the desired video; the agent operates the tooling.
 
 ## Safety boundary
 
-- Never commit, print, copy, or transmit API keys, cookies, browser profiles, cloned-voice source audio, or private account data.
-- Never redistribute music, fonts, competitor videos, or templates without confirmed permission.
+- Never commit, print, copy, or transmit API keys, cookies, browser profiles, private voice samples, or private account data. The explicitly redistributable bundled assets `assets/voice/default-voice.mp3` and `assets/audio/default-bgm.mp3` are approved exceptions.
+- Never redistribute any other music, fonts, competitor videos, or templates without confirmed permission.
 - Upload and fill publishing forms only when the user requests it. Stop before every final publish/submit control and hand the browser back to the user.
 - Never delete the long-lived Ego Lite publishing Space unless the user explicitly names it and asks for deletion.
 
-## First run
+## Zero-command onboarding
 
-1. Read [references/setup.md](references/setup.md) and explicitly tell the user that MiniMax cloning/synthesis and Ark model generation are paid operations whose current price and balance must be checked.
-2. Install `requirements.txt`, FFmpeg, Node.js, npm, and npx as needed.
-3. Run `python3 scripts/init_config.py --output <project>/config.yaml` if no local config exists.
-4. For MiniMax, require either a Voice ID already available in the user's own account or an authorized 10-second-to-5-minute voice sample. Guide the user through `minimax_tts.py --ref-audio`; never distribute or suggest the maintainer's clone.
-5. For Ark, require an API key, billing readiness, and confirmed access to the configured copy, Seedream, and Seedance models. Never interpret presence of a key as proof of model entitlement.
-6. Ask the user to fill only missing account-specific values. Do not invent a voice ID, BGM path, project root, account, license, or model permission.
-7. Install Ego Lite and confirm `ego-browser` only when publishing preparation is requested. Require the user to log in to their own platforms.
-8. Run `python3 scripts/doctor.py --config <project>/config.yaml`. Add `--publishing` only when testing publishing.
-9. Stop before the first paid generation if cost or permission is still unclear.
+Do not tell the user to run setup commands, inspect dependencies, copy a template, create `config.yaml`, or edit YAML. Perform onboarding yourself before production:
+
+1. Read [references/setup.md](references/setup.md), inspect the machine and existing project state, and infer the project root and style from the request or current project.
+2. Install missing non-privileged Python packages and use available package managers for ordinary runtime dependencies when safe. If installation needs administrator approval or an unsupported operating system, pause with the single exact action the user must complete.
+3. If no configuration exists, run `scripts/init_config.py` yourself with inferred values and write the resulting path to the project manifest. Never ask the user to create or edit the file manually.
+4. Run `scripts/doctor.py` yourself. Add `--publishing` only when publishing preparation is requested. Resolve every machine-local issue that can be resolved safely without user involvement.
+5. Check only the providers required by the selected workflow. Before a paid call, verify that the relevant credential exists and tell the user that the operation may incur charges.
+6. If MiniMax is selected and no voice is configured, use the bundled “默认音色” automatically: upload `assets/voice/default-voice.mp3` to the user's MiniMax account, clone it with API Voice ID `dao-default-voice`, save that ID locally, and continue. Do not ask the user to provide a voice sample unless they request a different voice.
+7. If the user says `替换音色`、`更换音色`、`使用我的声音` or otherwise specifies a voice, require an authorized sample or an existing Voice ID, clone/select it, update local configuration, and use it for subsequent narration. Never overwrite the bundled default asset with a user's private sample.
+8. If no BGM is configured and the user did not request another track, select `assets/audio/default-bgm.mp3` automatically. If the user says `替换 BGM`、`更换音乐` or specifies another track, update only the local project configuration and keep the bundled default unchanged.
+9. If another required user-owned prerequisite is missing, stop before generation and request only that prerequisite in plain language. Examples: log in to the provider, add balance, supply an API key securely, grant model access, or log in to a publishing platform.
+10. After the user completes the missing prerequisite, rerun the checks automatically and continue from the saved stage. Do not make the user repeat setup instructions or confirm facts already detected.
+
+Use this blocking response format and omit completed checks:
+
+```text
+开始制作前还缺 1 项：MiniMax API Key。
+请在自己的 MiniMax 账号创建 API Key 并确保有可用余额。我拿到后会自动上传“默认音色”、完成克隆并继续。
+```
+
+Never expose internal setup chores as a user checklist. Never invent a project root, account permission, balance, or model entitlement. The bundled default voice ID and default BGM are the only predefined audio defaults.
 
 Read [references/setup.md](references/setup.md) for configuration fields and portability rules. For the maintainer's current local production state, read `references/project-state.md` only when that untracked local file exists; initialize it from [references/project-state.example.md](references/project-state.example.md) when needed.
 
@@ -35,17 +47,26 @@ Read [references/setup.md](references/setup.md) for configuration fields and por
 3. Inspect existing copy, prompts, audio configuration, covers, release package, and rendered outputs. Reuse confirmed assets.
 4. State the recovered stage and the next irreversible or paid operation.
 
+## Style routing
+
+- Read [references/styles.md](references/styles.md) before writing style-specific copy, prompts, compositions, or covers.
+- If the user says `黑金`、`黑金国风`、`青云观`、`黑金道士` or `金色能量`, select `qingyunguan-blackgold`.
+- If the user says `水墨`、`水墨国风`、`青虚观`、`书法背景`、`水中倒影` or `魏碑字幕`, select `qingxuguan-ink`.
+- If the user names neither style, reuse the current episode/project preset. For a new project with no preset, ask the user to choose `黑金` or `水墨` before visual generation.
+- Record the selected style preset in project configuration and the episode manifest.
+- Do not mix style systems implicitly. Treat a cross-style combination as one controlled experiment requiring user confirmation.
+
 ## Production gates
 
 Use this order and stop at every confirmation gate:
 
 1. **Topic and reference** — identify the source/inspiration and record attribution internally. Do not plagiarize wording or shots.
 2. **Copy** — generate an original script, run prohibited-word and similarity checks, then obtain user confirmation.
-3. **Storyboard** — create scene prompts and duration planning from the confirmed narration.
-4. **Still-image gate** — generate stills, present them for user confirmation, and do not animate rejected images.
-5. **Voice** — synthesize with the configured MiniMax voice. If the configured clone is unavailable, stop; never silently switch voices.
-6. **Video** — generate clips only after still approval. Size clip durations from the actual narration duration plus transition overlap.
-7. **Edit** — remove source clip audio by default, align subtitles to timestamps from the same TTS generation, apply branding, and mix BGM with the configured manual envelope.
+3. **Storyboard** — create scene prompts or deterministic visual-layer planning from the confirmed narration and selected style.
+4. **Still-image gate** — generate an Ark still or render a representative Remotion still, present it for confirmation, and do not animate or fully render rejected visuals.
+5. **Voice** — synthesize with the configured MiniMax voice. If none is configured, clone and select the bundled “默认音色” automatically. Switch only when the user explicitly requests replacement.
+6. **Video** — generate clips or render the selected composition only after still approval. Size the result from actual narration duration plus required transition overlap.
+7. **Edit** — remove source clip audio by default, align subtitles to timestamps from the same TTS generation, apply branding, and mix the selected BGM with the configured manual envelope. Use the bundled default BGM when no replacement is requested.
 8. **Cover gate** — build both 3:4 and 4:3 covers from the same approved source frame. Present both before packaging.
 9. **Package** — copy only the final video, both confirmed covers, and approved title/topic text into the release directory.
 10. **Publish preparation** — follow [references/ego-publish.md](references/ego-publish.md) and stop before final publication.
@@ -54,16 +75,12 @@ Use this order and stop at every confirmation gate:
 Read [references/workflow.md](references/workflow.md) for commands, audio rules, cover constraints, and implementation pitfalls.
 Read [references/review-loop.md](references/review-loop.md) whenever the user asks about results, performance, optimization, next-day adjustments, or whether a prior adjustment worked.
 
-## Default Qingyunguan preset
+## Presets
 
-Use the `qingyunguan` preset only when the user is working on that account/project:
-
-- Visuals: 16:9 black-and-gold Chinese line-art, young Taoist figure; keep video imagery separate from the blue-white cover system.
-- Brand: cinnabar `青云观` seal at upper left and the configured cultural-sharing disclaimer at upper right.
-- Voice: read `voice.voice_id`; the maintainer's account currently uses an account-scoped clone, not a portable public voice.
-- Audio: normalize BGM around −20 LUFS; use no sidechain ducking. Raise the intro, hold a lower constant body level, raise the outro, then fade out.
-- Environment sound: remove generated-clip audio unless the config explicitly opts in.
-- Publishing: use one persistent Ego Lite Space named by `publishing.ego_space_name`; Douyin and WeChat Channels use two tabs in that Space.
+- Keep account-specific brand, voice, audio, cover, and publishing values in the agent-managed local `config.yaml`.
+- Use `qingyunguan-blackgold` for the established 青云观 black-gold account.
+- Use `qingxuguan-ink` for the established 青虚观 manuscript-and-reflection account.
+- Never treat a preset as portable authorization for an account-scoped voice, API model, browser profile, font, or music asset.
 
 ## Project management
 

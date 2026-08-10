@@ -29,14 +29,14 @@ python3 scripts/minimax_tts.py --config "$DAO_VIDEO_CONFIG" --text narration.txt
 
 ## Visuals
 
-- The Qingyunguan video default is black-and-gold line art on a dark background.
-- Describe the recurring Taoist figure as young, refined, and consistent across scenes.
-- Use scene prefixes `远景|`, `近景|`, or `围合|` with `ark_images.py`.
-- Do not mix cover palette instructions into video-frame prompts.
+- Resolve the style from `project.preset` and the user's latest explicit style instruction, then read `references/styles.md`.
+- Use `qingyunguan-blackgold` for black-gold Ark scenes and `qingxuguan-ink` for manuscript, calligraphy, Remotion parallax, and water-reflection work.
+- Use scene prefixes `远景|`, `近景|`, or `围合|` with `ark_images.py` when the selected preset generates Ark scenes.
+- Do not mix one preset's cover palette or visual rules into another preset's video prompts without an approved experiment.
 
 ## Covers
 
-- Prefer one clean frame from the current unbranded video as the source for both covers.
+- Prefer one clean approved source frame or the branch's dedicated cover composition as the source for both covers.
 - Allow mirroring, proportional scaling, and focus crop; never stretch or redraw the person without explicit permission.
 - Produce both 3:4 and 4:3 files and verify them independently.
 - Keep exact Chinese title and seal rendering local; do not ask an image model to render final Chinese text.
