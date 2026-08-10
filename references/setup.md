@@ -22,10 +22,17 @@ Optional components:
 - Never state a hard-coded price as permanent. Link to the provider's current pricing page and treat every paid call as visible project work.
 - Ego Lite is only required for publishing preparation. Platform accounts, verification, and login are user responsibilities.
 
+Before the first paid generation, present one combined confirmation instead of separate technical checklists:
+
+1. Ask whether the user wants to provide a specific authorized voice or use the bundled default voice.
+2. State explicitly that the visual workflow uses Seedream for still images and Seedance for video generation, both are paid Ark calls, and require API credentials, balance, and model entitlement.
+3. Wait for the user's choice/confirmation before uploading the default voice or calling Seedream/Seedance.
+4. Save the confirmation locally and do not repeat it for every episode unless the voice, provider, model, or account changes.
+
 ## MiniMax first-time voice setup
 
 1. Create a MiniMax API key at `https://platform.minimaxi.com/` and add usable balance or a suitable plan.
-2. When no voice is configured and the user has not requested a specific voice, automatically use `assets/voice/default-voice.mp3`. Upload it to the user's own MiniMax account and clone it as API Voice ID `dao-default-voice`; the user-facing name remains “默认音色”.
+2. When no voice is configured, first ask whether the user has a specific authorized voice. Use `assets/voice/default-voice.mp3` only after the user says they have no specific voice or selects the default. Upload it to the user's own MiniMax account and clone it as API Voice ID `dao-default-voice`; the user-facing name remains “默认音色”.
 3. Save the successful Voice ID in local `config.yaml` and reuse it. Do not upload or clone again on every episode.
 4. When the user asks to `替换音色` or supplies a specific voice, require an authorized sample in mp3, m4a, or wav format, 10 seconds to 5 minutes, no more than 20 MB, or accept an existing Voice ID from that user's MiniMax account.
 5. For a replacement clone, choose a new API Voice ID 8–256 characters long, starting with a letter, containing only letters, digits, `-`, and `_`, and not ending with `-` or `_`. Keep private replacement samples outside the repository.

@@ -52,3 +52,7 @@ review:
 optional:
   jianying_drafts_dir: ""
   mcp_cut_repo: ""
+
+onboarding:
+  voice_choice: ""
+  paid_generation_confirmed: false

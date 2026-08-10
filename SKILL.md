@@ -22,8 +22,8 @@ Do not tell the user to run setup commands, inspect dependencies, copy a templat
 2. Install missing non-privileged Python packages and use available package managers for ordinary runtime dependencies when safe. If installation needs administrator approval or an unsupported operating system, pause with the single exact action the user must complete.
 3. If no configuration exists, run `scripts/init_config.py` yourself with inferred values and write the resulting path to the project manifest. Never ask the user to create or edit the file manually.
 4. Run `scripts/doctor.py` yourself. Add `--publishing` only when publishing preparation is requested. Resolve every machine-local issue that can be resolved safely without user involvement.
-5. Check only the providers required by the selected workflow. Before a paid call, verify that the relevant credential exists and tell the user that the operation may incur charges.
-6. If MiniMax is selected and no voice is configured, use the bundled “默认音色” automatically: upload `assets/voice/default-voice.mp3` to the user's MiniMax account, clone it with API Voice ID `dao-default-voice`, save that ID locally, and continue. Do not ask the user to provide a voice sample unless they request a different voice.
+5. Check only the providers required by the selected workflow. Before the first paid generation, verify credentials and present the combined voice/model choice below. Do not upload the default voice or call a paid model until the user answers.
+6. If MiniMax is selected and no voice is configured, ask whether the user has a specific voice. If they provide an authorized sample or existing Voice ID, use it. If they say they have no specific voice or choose the default, upload `assets/voice/default-voice.mp3` to their MiniMax account, clone it with API Voice ID `dao-default-voice`, save that ID locally, and continue.
 7. If the user says `替换音色`、`更换音色`、`使用我的声音` or otherwise specifies a voice, require an authorized sample or an existing Voice ID, clone/select it, update local configuration, and use it for subsequent narration. Never overwrite the bundled default asset with a user's private sample.
 8. If no BGM is configured and the user did not request another track, select `assets/audio/default-bgm.mp3` automatically. If the user says `替换 BGM`、`更换音乐` or specifies another track, update only the local project configuration and keep the bundled default unchanged.
 9. If another required user-owned prerequisite is missing, stop before generation and request only that prerequisite in plain language. Examples: log in to the provider, add balance, supply an API key securely, grant model access, or log in to a publishing platform.
@@ -32,9 +32,15 @@ Do not tell the user to run setup commands, inspect dependencies, copy a templat
 Use this blocking response format and omit completed checks:
 
 ```text
-开始制作前还缺 1 项：MiniMax API Key。
-请在自己的 MiniMax 账号创建 API Key 并确保有可用余额。我拿到后会自动上传“默认音色”、完成克隆并继续。
+环境已经自动检查完成。正式生成前请确认 2 项：
+
+1. 配音：MiniMax 音色克隆和后续配音会产生费用。如果你有特定音色，请提供已获授权的 10 秒–5 分钟干净人声，或告诉我 MiniMax 中已有的 Voice ID；如果没有，请回复“使用默认音色”，我会上传内置样本并在你的 MiniMax 账号中完成克隆。
+2. 画面：本流程会使用火山方舟 Seedream 生图和 Seedance 视频生成，这两项都会产生费用。请确认已配置 ARK_API_KEY、账户有余额，并已开通当前模型权限。
+
+你可以直接回复：“使用默认音色，Seedream 和 Seedance 已开通，可以继续。”
 ```
+
+If either credential is missing, replace the corresponding confirmation line with the one concrete setup action required. Record the user's voice choice and paid-generation confirmation in local project state so they are not asked again for every episode. Reconfirm only when changing voice, provider, model, or account.
 
 Never expose internal setup chores as a user checklist. Never invent a project root, account permission, balance, or model entitlement. The bundled default voice ID and default BGM are the only predefined audio defaults.
 
@@ -64,7 +70,7 @@ Use this order and stop at every confirmation gate:
 2. **Copy** — generate an original script, run prohibited-word and similarity checks, then obtain user confirmation.
 3. **Storyboard** — create scene prompts or deterministic visual-layer planning from the confirmed narration and selected style.
 4. **Still-image gate** — generate an Ark still or render a representative Remotion still, present it for confirmation, and do not animate or fully render rejected visuals.
-5. **Voice** — synthesize with the configured MiniMax voice. If none is configured, clone and select the bundled “默认音色” automatically. Switch only when the user explicitly requests replacement.
+5. **Voice** — synthesize with the configured MiniMax voice. If none is configured, obtain the first-run voice choice; use a supplied authorized voice or clone the bundled default after the user selects it. Switch only when the user explicitly requests replacement.
 6. **Video** — generate clips or render the selected composition only after still approval. Size the result from actual narration duration plus required transition overlap.
 7. **Edit** — remove source clip audio by default, align subtitles to timestamps from the same TTS generation, apply branding, and mix the selected BGM with the configured manual envelope. Use the bundled default BGM when no replacement is requested.
 8. **Cover gate** — build both 3:4 and 4:3 covers from the same approved source frame. Present both before packaging.

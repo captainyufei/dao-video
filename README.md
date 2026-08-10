@@ -39,7 +39,14 @@
 
 不用自己检查 Python、FFmpeg、Node.js，不用创建或编辑 `config.yaml`，也不用手动运行诊断命令。Agent 会自动检查环境、创建配置并处理能安全处理的依赖。
 
-如果缺少必须由本人完成的条件，Agent 只会提示缺失项，例如 MiniMax/API Key、账户余额、模型权限或平台登录。默认配音样本和默认 BGM 已经内置，不需要用户另外准备；完成后继续对话即可，不需要重新配置。
+首次正式生成前，Agent 会集中确认两件事：用户是提供特定授权音色还是使用默认音色；火山方舟 Seedream 生图与 Seedance 视频生成是否已经开通并确认费用。默认配音样本和默认 BGM 已经内置，不需要用户另外准备。
+
+用户会看到类似提示：
+
+> 1. MiniMax 克隆和配音会产生费用。如果你有特定音色，请提供授权人声或 MiniMax Voice ID；如果没有，请回复“使用默认音色”。
+> 2. 本流程会使用付费的 Seedream 生图和 Seedance 视频生成，请确认 ARK_API_KEY、余额和模型权限已准备好。
+
+确认会保存在本地项目状态中，不会每期重复询问；更换音色、模型、服务商或账号时才重新确认。
 
 ## 实际效果
 
@@ -98,7 +105,7 @@ python3 -m pip install -r requirements.txt
 ### 一、配置 MiniMax 配音
 
 1. 注册并登录 [MiniMax 开放平台](https://platform.minimaxi.com/)，在“接口密钥”中创建 API Key，并按平台提示充值或购买可用额度。
-2. 如果用户没有指定音色，Agent 自动上传仓库内的 `assets/voice/default-voice.mp3`，在该用户自己的账号中克隆为“默认音色”，底层 API Voice ID 为 `dao-default-voice`。
+2. 如果尚未配置音色，Agent 会先询问用户是否有特定音色。用户提供授权样本或已有 Voice ID 时使用该音色；用户明确选择“使用默认音色”后，Agent 才上传 `assets/voice/default-voice.mp3`，在该用户自己的账号中克隆为“默认音色”，底层 API Voice ID 为 `dao-default-voice`。
 3. 克隆成功后 Agent 自动保存配置，以后直接复用，不会每期重复上传。
 4. 用户需要不同声音时，只要说“替换音色”，再提供本人或已明确授权的 10 秒–5 分钟干净人声，或提供自己账号中已有的 Voice ID。Agent 会完成替换和配置更新。
 5. 下面命令仅供 Agent 执行和故障排查，普通用户无需运行：
@@ -325,7 +332,7 @@ python3 scripts/minimax_tts.py \
 以下内容不会随仓库自动转移：
 
 - MiniMax 复刻音色：音色 ID 通常属于创建它的账号
-- BGM 与字体：需要使用者提供有权使用的本地文件
+- 替换用的 BGM 与字体：需要使用者提供有权使用的本地文件；默认 BGM 已内置
 - Ego Lite 登录状态和 Space：每台电脑、每个账号需要单独登录
 - 火山模型权限：不同账号需要分别开通对应模型
 - 剪映草稿目录：仅在兼容的 macOS 剪映专业版环境中可用
@@ -348,10 +355,10 @@ dao-video/
 └── scripts/                 # 生成、配音、字幕、剪辑、封面与预检工具
 ```
 
-本地 `config.yaml`、`references/project-state.md`、密钥、浏览器状态以及音视频文件均由 `.gitignore` 排除。
+本地 `config.yaml`、`references/project-state.md`、密钥、浏览器状态以及用户私有音视频文件均由 `.gitignore` 排除。仓库只包含明确批准分发的默认音色与默认 BGM。
 
 ## 当前状态
 
 - 已在青云观实际生产流程中验证文案、黑金分镜、Seedance、MiniMax 复刻音色、字幕、BGM、双封面和 Ego Lite 待发布流程
 - 当前默认预设偏向中文传统文化横屏短视频
-- 其他品牌可以通过配置复用通用流水线，但需要自行提供视觉预设、音色、BGM 和平台账号
+- 其他品牌可以通过配置复用通用流水线；可直接使用默认音色和默认 BGM，也可提供自己的授权素材与平台账号
