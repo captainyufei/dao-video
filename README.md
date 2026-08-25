@@ -403,3 +403,28 @@ dao-video/
 | ![横版封面](./20260816-不争/04-封面/横版封面.png) | ![竖版封面](./20260816-不争/04-封面/竖版封面.png) |
 
 水墨风格规则和可移植 Skill 位于 [`dist/dao-video-suite-universal/dao-ink-video/`](./dist/dao-video-suite-universal/dao-ink-video/)，本期 Remotion 示例源码位于 [`20260816-不争/04-封面/remotion/`](./20260816-不争/04-封面/remotion/)。
+
+## 联系作者
+
+使用问题、Bug 和功能建议，欢迎通过 [GitHub Issues](https://github.com/captainyufei/dao-video/issues) 公开反馈。合作与其他交流也可以通过邮件联系：[`captainaigc@163.com`](mailto:captainaigc@163.com)。
+
+<p align="center">
+  <a href="https://x.com/yufei_ai1">
+    <img src="https://raw.githubusercontent.com/captainyufei/yufei-tiangong-skill/main/assets/readme/contact/x-card.svg" width="520" alt="在 X 上关注 Captain 宇飞 AI，账号 yufei_ai1">
+  </a>
+</p>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>个人微信</strong><br><br>
+      <img src="https://raw.githubusercontent.com/captainyufei/yufei-tiangong-skill/main/assets/readme/contact/wechat-personal.png" width="220" alt="飞哥 AI 个人微信二维码"><br>
+      <sub>创作交流 · 添加请备注「dao-video」</sub>
+    </td>
+    <td align="center" width="50%">
+      <strong>企业微信</strong><br><br>
+      <img src="https://raw.githubusercontent.com/captainyufei/yufei-tiangong-skill/main/assets/readme/contact/wecom.png" width="220" alt="飞哥 AI 企业微信二维码"><br>
+      <sub>项目合作 · 添加请备注「dao-video」</sub>
+    </td>
+  </tr>
+</table>
