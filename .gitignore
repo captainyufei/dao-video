@@ -1,0 +1,38 @@
+.DS_Store
+.ecc-design/
+.ppt-build/
+**/node_modules/
+*.inspect.ndjson
+.env
+.env.*
+!.env.example
+**/废稿/
+
+# Episode workspaces and presentation exports are local working material.
+/202*/
+/*.pptx
+/*.pptx.inspect.ndjson
+/青云观-Codex直播分享课/
+/brand/
+/assets/
+/filter-final.txt
+
+# Local production assets and intermediate audio/video are kept out of the source release.
+00-素材/
+/01-文案/
+/02-配音/
+/03-成片/
+/04-封面/
+/05-发布/
+/06-复盘/
+dist/*.zip
+dist/*.skill
+**/02-配音/*.mp3
+**/02-配音/*.wav
+**/03-成片/*.mp4
+**/03-成片/预览/*.mp4
+**/05-发布/*.mp4
+**/05-发布/历史版本/
+
+# Keep the selected public demo video in the repository.
+!20260816-不争/03-成片/不争-水墨24秒节奏版-v10-试听确认.mp4

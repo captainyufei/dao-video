@@ -1,0 +1,21 @@
+{
+  "name": "qingyunguan-buzheng-cover",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "eslint src && tsc"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.507",
+    "@remotion/fonts": "4.0.507",
+    "@remotion/media": "4.0.507",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.507"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.507",
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}

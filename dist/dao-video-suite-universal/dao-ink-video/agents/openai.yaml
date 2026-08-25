@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dao 水墨国风视频"
+  short_description: "运用原创国学文案、书法视差和贴合水纹倒影制作水墨系列视频"
+  default_prompt: "使用 $dao-ink-video 和 $dao-video 创作下一期水墨国风视频及配套封面。"

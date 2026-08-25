@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dao 黑金国风视频"
+  short_description: "制作黑金道士人物、金色能量场景和双比例封面的传统文化短视频"
+  default_prompt: "使用 $dao-blackgold-video 和 $dao-video 制作下一期黑金国风短视频。"

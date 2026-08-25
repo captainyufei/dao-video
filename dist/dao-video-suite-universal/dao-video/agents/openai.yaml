@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dao Video 视频项目"
+  short_description: "统一管理黑金与水墨系列的制作、待发布、打包和复盘流程"
+  default_prompt: "使用 $dao-video 检查项目并选择 $dao-blackgold-video 或 $dao-ink-video，继续制作或复盘最近一期视频。"
